@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="jquery-2.1.3.min.js"></script>
+    <style>
+        .main {
+            width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h1 class="title">JS pattern MODULE</h1>
+        <input type="text" class="addName">
+        <input type="button" value="Add" class="newName">
+        <ul class="listName">
+            <li>SomeName <span class="del">X</span></li>
+        </ul>
+    </div>
+    <script>
+
+        (function(){
+            var people = {
+                people: ['Petya', 'Vasya', 'Roma', 'Yura'], // масив імен
+                init: function(){ // функція ініціалізації роботи модуля
+                    this.cacheDom(); // спрацьовує функція доступів до елементів
+                    this.bindEvents(); // спрацьовує функція задавання подій
+                    this.render(); // функція обновлення сторінки
+                },
+                cacheDom: function(){
+                    this.$el = $('.main');
+                    this.$button = this.$el.find('.newName');
+                    this.$input = this.$el.find('.addName');
+                    this.$ul = this.$el.find('.listName');
+                },
+                bindEvents: function(){
+                    this.$button.on('click', this.addPerson.bind(this)); // для того щоб не втратити контексти bind(this)
+                    this.$ul.delegate('span.del','click', this.deletePerson.bind(this));
+                },
+                render: function(){
+                    this.$ul.html('');
+                    var data = {
+                        people: this.people
+                    };
+                    for(var i=0;i<data.people.length;i++){
+                        this.$ul.append('<li>'+data.people[i]+' <span class="del">X</span></li>');
+                    }
+                },
+                addPerson: function(){ // функція яка вставляє в масив імені нове ім'я.
+                    console.log(this);
+                    this.people.push(this.$input.val());
+                    this.render();
+                    this.$input.val('');
+                },
+                deletePerson: function(e){ // функція видалення імені
+                    var $remove = $(e.target).closest('li');
+                    var span = this.$ul.find('li').index($remove);
+                    this.people.splice(span,1);
+                    this.render();
+                }
+                
+            };
+            people.init(); // ініціалізація модуля
+            //people.addPerson('Lololo'); // введення нового ім'я, за допомогою методу.
+        })();
+        
+        
+        
+    </script>
+</body>
+
+</html>
